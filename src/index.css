@@ -1,0 +1,183 @@
+@import "tailwindcss";
+
+/* ════════════════════════════════════════════════════
+   TOKENS MATERIAL DESIGN 3 — Panel Administrativo
+   Portados desde frontend-admin/tailwind.config.js
+   ════════════════════════════════════════════════════ */
+@theme {
+  /* Colores MD3 */
+  --color-primary:                    #002753;
+  --color-on-primary:                 #ffffff;
+  --color-primary-container:          #003d7a;
+  --color-on-primary-container:       #81aaed;
+  --color-primary-fixed:              #d6e3ff;
+  --color-primary-fixed-dim:          #a8c8ff;
+  --color-on-primary-fixed:           #001b3d;
+  --color-on-primary-fixed-variant:   #134684;
+  --color-inverse-primary:            #a8c8ff;
+  --color-surface-tint:               #335f9d;
+
+  --color-secondary:                  #755b00;
+  --color-on-secondary:               #ffffff;
+  --color-secondary-container:        #fccc38;
+  --color-on-secondary-container:     #6f5600;
+  --color-secondary-fixed:            #ffdf90;
+  --color-secondary-fixed-dim:        #f0c12c;
+  --color-on-secondary-fixed:         #241a00;
+  --color-on-secondary-fixed-variant: #584400;
+
+  --color-tertiary:                   #0e2a42;
+  --color-on-tertiary:                #ffffff;
+  --color-tertiary-container:         #264059;
+  --color-on-tertiary-container:      #92abc9;
+  --color-tertiary-fixed:             #d0e4ff;
+  --color-tertiary-fixed-dim:         #afc9e8;
+  --color-on-tertiary-fixed:          #001d34;
+  --color-on-tertiary-fixed-variant:  #2f4962;
+
+  --color-error:                      #ba1a1a;
+  --color-on-error:                   #ffffff;
+  --color-error-container:            #ffdad6;
+  --color-on-error-container:         #93000a;
+
+  --color-surface:                    #f8f9fa;
+  --color-on-surface:                 #191c1d;
+  --color-surface-variant:            #e1e3e4;
+  --color-on-surface-variant:         #434750;
+  --color-surface-dim:                #d9dadb;
+  --color-surface-bright:             #f8f9fa;
+  --color-surface-container-lowest:   #ffffff;
+  --color-surface-container-low:      #f3f4f5;
+  --color-surface-container:          #edeeef;
+  --color-surface-container-high:     #e7e8e9;
+  --color-surface-container-highest:  #e1e3e4;
+  --color-inverse-surface:            #2e3132;
+  --color-inverse-on-surface:         #f0f1f2;
+
+  --color-outline:                    #737781;
+  --color-outline-variant:            #c3c6d2;
+  --color-on-background:              #191c1d;
+  --color-background:                 #f8f9fa;
+
+  /* Espaciados MD3 — solo nombres que no conflictan con Tailwind 4 */
+  --spacing-gutter:          24px;   /* genera p-gutter, px-gutter, etc. */
+  --spacing-container-max:   1280px; /* genera max-w-container-max       */
+  --spacing-base:            8px;
+  --spacing-margin-desktop:  32px;
+  --spacing-margin-mobile:   16px;
+}
+
+/* ── Tipografía MD3 ── */
+@layer utilities {
+  .text-label-sm          { font-size: 11px; line-height: 16px; letter-spacing: 0.5px; font-weight: 500; }
+  .text-label-lg          { font-size: 14px; line-height: 20px; letter-spacing: 0.1px; font-weight: 500; }
+  .text-body-md           { font-size: 14px; line-height: 20px; letter-spacing: 0.25px; font-weight: 400; }
+  .text-body-lg           { font-size: 16px; line-height: 24px; letter-spacing: 0.5px;  font-weight: 400; }
+  .text-title-md          { font-size: 16px; line-height: 24px; letter-spacing: 0.15px; font-weight: 500; }
+  .text-title-lg          { font-size: 22px; line-height: 28px; font-weight: 500; }
+  .text-headline-md       { font-size: 28px; line-height: 36px; font-weight: 600; }
+  .text-headline-lg       { font-size: 32px; line-height: 40px; font-weight: 600; }
+  .text-headline-lg-mobile{ font-size: 28px; line-height: 36px; font-weight: 600; }
+  .text-display-lg        { font-size: 57px; line-height: 64px; letter-spacing: -0.02em; font-weight: 700; }
+
+  /* font-family classes: todas apuntan a Inter (compatibilidad con componentes admin) */
+  .font-label-sm, .font-label-lg, .font-body-md, .font-body-lg,
+  .font-title-md, .font-title-lg, .font-headline-md, .font-headline-lg,
+  .font-display-lg { font-family: Inter, sans-serif; }
+
+  /* ── Espaciados admin MD3 ──────────────────────────────────────────────────
+     Definidos como utilidades explícitas (NO como --spacing-* en @theme)
+     para evitar que Tailwind 4 sobreescriba max-w-md, max-w-lg, etc.
+  ── */
+  .gap-xs  { gap: 4px; }
+  .gap-sm  { gap: 8px; }
+  .gap-md  { gap: 16px; }
+  .gap-lg  { gap: 24px; }
+  .gap-xl  { gap: 32px; }
+  .gap-2xl { gap: 48px; }
+  .gap-3xl { gap: 64px; }
+
+  .p-xs  { padding: 4px; }
+  .p-sm  { padding: 8px; }
+  .p-md  { padding: 16px; }
+  .p-lg  { padding: 24px; }
+  .p-xl  { padding: 32px; }
+
+  .px-md { padding-left: 16px; padding-right: 16px; }
+  .px-lg { padding-left: 24px; padding-right: 24px; }
+
+  .py-md { padding-top: 16px;  padding-bottom: 16px; }
+  .py-lg { padding-top: 24px;  padding-bottom: 24px; }
+  .py-xl { padding-top: 32px;  padding-bottom: 32px; }
+
+  .mt-xs { margin-top: 4px; }
+  .mt-sm { margin-top: 8px; }
+  .mt-md { margin-top: 16px; }
+  .mt-lg { margin-top: 24px; }
+  .mt-xl { margin-top: 32px; }
+
+  .mb-xs { margin-bottom: 4px; }
+  .mb-sm { margin-bottom: 8px; }
+  .mb-md { margin-bottom: 16px; }
+  .mb-lg { margin-bottom: 24px; }
+  .mb-xl { margin-bottom: 32px; }
+
+  .space-y-sm  > * + * { margin-top: 8px; }
+  .space-y-md  > * + * { margin-top: 16px; }
+  .space-y-lg  > * + * { margin-top: 24px; }
+  .space-y-xl  > * + * { margin-top: 32px; }
+}
+
+/* ── Utilidades del admin ── */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.bg-pattern {
+  background-image: radial-gradient(circle at 2px 2px, rgba(0, 39, 83, 0.05) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.ficha-bg {
+  background-image: radial-gradient(circle at 2px 2px, rgba(0, 61, 122, 0.05) 1px, transparent 0);
+  background-size: 24px 24px;
+}
+
+.custom-scrollbar::-webkit-scrollbar       { width: 6px; height: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #c3c6d2; border-radius: 10px; }
+
+@keyframes float-1 {
+  0%, 100% { transform: translateY(0px) translateX(0px) rotate(12deg); }
+  33%       { transform: translateY(-30px) translateX(15px) rotate(25deg); }
+  66%       { transform: translateY(-15px) translateX(-20px) rotate(0deg); }
+}
+
+@keyframes float-2 {
+  0%, 100% { transform: translateY(0px) translateX(0px) rotate(-15deg); }
+  50%      { transform: translateY(-40px) translateX(25px) rotate(20deg); }
+}
+
+@keyframes float-3 {
+  0%, 100% { transform: translateY(0px) rotate(45deg); }
+  40%      { transform: translateY(-35px) translateX(-15px) rotate(80deg); }
+  70%      { transform: translateY(-20px) translateX(10px) rotate(30deg); }
+}
+
+@keyframes float-4 {
+  0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg); }
+  25%      { transform: translateY(-20px) translateX(20px) rotate(45deg); }
+  75%      { transform: translateY(-45px) translateX(-10px) rotate(-20deg); }
+}
+
+.particle { position: fixed; border-radius: 2px; pointer-events: none; }
+.float-1  { animation: float-1 4s ease-in-out infinite; }
+.float-2  { animation: float-2 5s ease-in-out infinite; }
+.float-3  { animation: float-3 3.5s ease-in-out infinite; }
+.float-4  { animation: float-4 6s ease-in-out infinite; }
