@@ -4,7 +4,7 @@ import DashboardLayout from '../layouts/DashboardLayout';
 import SolicitudesTable from '../components/SolicitudesTable';
 import { getRequests, getErrorMessage } from '../api/requestsService';
 import { logout, getUser } from '../api/authService';
-import { CAMPUS, COURSE, REQUEST_STATUS } from '../api/config';
+import { COURSE, PARALELO, REQUEST_STATUS, SUBJECTS_PERMITIDOS } from '../api/config';
 
 const CURSO_LABELS = {
   '1ro_Basica': '1ro Básica',
@@ -22,7 +22,7 @@ const CURSO_LABELS = {
   '3ro_Bach': '3ro Bach',
 };
 
-const EMPTY_FILTERS = { status: '', campus: '', course: '', search: '' };
+const EMPTY_FILTERS = { status: '', course: '', paralelo: '', subject: '', search: '' };
 
 export default function Solicitudes() {
   const navigate = useNavigate();
@@ -45,7 +45,8 @@ export default function Solicitudes() {
     setLoading(true);
     setError(null);
     try {
-      const data = await getRequests(f);
+      // paralelo y subject se filtran localmente; solo se envían los que el backend soporta
+      const data = await getRequests({ status: f.status, course: f.course, search: f.search });
       setSolicitudes(data);
     } catch (err) {
       setError(getErrorMessage(err));
@@ -81,6 +82,13 @@ export default function Solicitudes() {
     fetchSolicitudes(EMPTY_FILTERS);
   }
 
+  // Filtros locales: paralelo (exacto) y subject (el array payload.subjects debe contenerlo)
+  const displayedSolicitudes = solicitudes.filter((s) => {
+    if (activeFilters.paralelo && s.paralelo !== activeFilters.paralelo) return false;
+    if (activeFilters.subject && !(s.payload?.subjects ?? []).includes(activeFilters.subject)) return false;
+    return true;
+  });
+
   return (
     <DashboardLayout
       title="Gestión de Solicitudes"
@@ -98,22 +106,7 @@ export default function Solicitudes() {
             </span>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 flex-1">
-            <select
-              value={filters.campus}
-              onChange={(e) =>
-                setFilters((f) => ({ ...f, campus: e.target.value }))
-              }
-              className="bg-surface-container-low border border-outline-variant rounded-lg font-body-md text-body-md px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary transition-all"
-            >
-              <option value="">Campus: Todos</option>
-              {Object.values(CAMPUS).map((c) => (
-                <option key={c} value={c}>
-                  {c.replace(/_/g, ' ')}
-                </option>
-              ))}
-            </select>
-
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 flex-1">
             <select
               value={filters.course}
               onChange={(e) =>
@@ -125,6 +118,36 @@ export default function Solicitudes() {
               {COURSE.map((c) => (
                 <option key={c} value={c}>
                   {CURSO_LABELS[c] ?? c}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={filters.paralelo}
+              onChange={(e) =>
+                setFilters((f) => ({ ...f, paralelo: e.target.value }))
+              }
+              className="bg-surface-container-low border border-outline-variant rounded-lg font-body-md text-body-md px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+            >
+              <option value="">Paralelo: Todos</option>
+              {PARALELO.map((p) => (
+                <option key={p} value={p}>
+                  Paralelo {p}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={filters.subject}
+              onChange={(e) =>
+                setFilters((f) => ({ ...f, subject: e.target.value }))
+              }
+              className="bg-surface-container-low border border-outline-variant rounded-lg font-body-md text-body-md px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+            >
+              <option value="">Materia: Todas</option>
+              {SUBJECTS_PERMITIDOS.map((s) => (
+                <option key={s} value={s}>
+                  {s}
                 </option>
               ))}
             </select>
@@ -176,7 +199,7 @@ export default function Solicitudes() {
       )}
 
       <SolicitudesTable
-        solicitudes={solicitudes}
+        solicitudes={displayedSolicitudes}
         loading={loading}
         onVerDetalle={(id) => navigate(`/admin/solicitudes/${id}`)}
         onRefresh={() => fetchSolicitudes(activeFilters)}

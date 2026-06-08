@@ -106,7 +106,6 @@ export async function createRequest(data) {
 export async function getRequests(filters = {}) {
   const params = new URLSearchParams();
   if (filters.status) params.set('status', filters.status);
-  if (filters.campus) params.set('campus', filters.campus);
   if (filters.course) params.set('course', filters.course);
   if (filters.search) params.set('search', filters.search);
   const query = params.toString();
