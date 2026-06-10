@@ -5,6 +5,7 @@ import SolicitudesTable from '../components/SolicitudesTable';
 import { getRequests, getErrorMessage } from '../api/requestsService';
 import { logout, getUser } from '../api/authService';
 import { COURSE, PARALELO, REQUEST_STATUS, SUBJECTS_PERMITIDOS } from '../api/config';
+import { exportSolicitudesToExcel } from '../utils/exportExcel';
 
 const CURSO_LABELS = {
   '1ro_Basica': '1ro Básica',
@@ -180,6 +181,15 @@ export default function Solicitudes() {
               className="flex-1 lg:flex-none bg-primary text-on-primary font-label-lg text-label-lg px-6 py-2 rounded-lg hover:opacity-90 transition-opacity"
             >
               Aplicar
+            </button>
+            <button
+              onClick={() => exportSolicitudesToExcel(displayedSolicitudes, activeFilters)}
+              disabled={displayedSolicitudes.length === 0}
+              title={displayedSolicitudes.length === 0 ? 'No hay solicitudes para exportar' : `Exportar ${displayedSolicitudes.length} solicitud(es) a Excel`}
+              className="flex-1 lg:flex-none flex items-center gap-2 bg-green-700 text-white font-label-lg text-label-lg px-4 py-2 rounded-lg hover:bg-green-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <span className="material-symbols-outlined text-[16px]">download</span>
+              Excel
             </button>
           </div>
         </div>
