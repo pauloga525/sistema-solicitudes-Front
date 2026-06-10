@@ -35,6 +35,7 @@ export default function Solicitudes() {
   const [filters, setFilters] = useState(EMPTY_FILTERS);
   const [activeFilters, setActiveFilters] = useState(EMPTY_FILTERS);
   const [searchInput, setSearchInput] = useState('');
+  const [isExporting, setIsExporting] = useState(false);
   const debounceRef = useRef(null);
 
   function handleLogout() {
@@ -74,6 +75,19 @@ export default function Solicitudes() {
     const merged = { ...filters, search: searchInput };
     setActiveFilters(merged);
     fetchSolicitudes(merged);
+  }
+
+  function handleExportExcel() {
+    if (isExporting) return;
+    setIsExporting(true);
+    // setTimeout(0) deja que React renderice el spinner antes de la operación síncrona de XLSX
+    setTimeout(() => {
+      try {
+        exportSolicitudesToExcel(displayedSolicitudes, activeFilters);
+      } finally {
+        setIsExporting(false);
+      }
+    }, 0);
   }
 
   function handleClear() {
@@ -183,13 +197,15 @@ export default function Solicitudes() {
               Aplicar
             </button>
             <button
-              onClick={() => exportSolicitudesToExcel(displayedSolicitudes, activeFilters)}
-              disabled={displayedSolicitudes.length === 0}
+              onClick={handleExportExcel}
+              disabled={displayedSolicitudes.length === 0 || isExporting}
               title={displayedSolicitudes.length === 0 ? 'No hay solicitudes para exportar' : `Exportar ${displayedSolicitudes.length} solicitud(es) a Excel`}
               className="flex-1 lg:flex-none flex items-center gap-2 bg-green-700 text-white font-label-lg text-label-lg px-4 py-2 rounded-lg hover:bg-green-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              <span className="material-symbols-outlined text-[16px]">download</span>
-              Excel
+              <span className={`material-symbols-outlined text-[16px] ${isExporting ? 'animate-spin' : ''}`}>
+                {isExporting ? 'progress_activity' : 'download'}
+              </span>
+              {isExporting ? 'Generando...' : 'Excel'}
             </button>
           </div>
         </div>
