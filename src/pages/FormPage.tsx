@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import {
   User,
@@ -16,29 +16,32 @@ import { FormFooter } from '../components/FormFooter';
 
 const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
 
-const COURSES = [
-  { value: '4to_Basica', label: '4to de Básica' },
-  { value: '5to', label: '5to de Básica' },
-  { value: '6to', label: '6to de Básica' },
-  { value: '7mo', label: '7mo de Básica' },
+const COURSE_LABELS: Record<string, string> = {
+  '1ro_Basica': '1ro de Básica',
+  '2do_Basica': '2do de Básica',
+  '3ro_Basica': '3ro de Básica',
+  '4to_Basica': '4to de Básica',
+  '5to':        '5to de Básica',
+  '6to':        '6to de Básica',
+  '7mo':        '7mo de Básica',
+  '8vo':        '8vo de Básica',
+  '9no':        '9no de Básica',
+  '10mo':       '10mo de Básica',
+  '1ro_Bach':   '1ro de Bachillerato',
+  '2do_Bach':   '2do de Bachillerato',
+  '3ro_Bach':   '3ro de Bachillerato',
+};
+
+// Valores de respaldo si falla la carga desde la API
+const FALLBACK_COURSES = ['4to_Basica', '5to', '6to', '7mo'];
+const FALLBACK_SUBJECTS = [
+  'Matemática', 'Lengua y literatura', 'Science', 'Estudios Sociales',
+  'Inglés', 'ECA', 'Computación', 'Animación a la lectura',
+  'Educación física', 'ERE', 'Razonamiento lógico Matemático',
+  'Acompañamiento integral en el Aula',
 ];
 
 const PARALELOS = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-
-const SUBJECTS = [
-  'Matemática',
-  'Lengua y literatura',
-  'Science',
-  'Estudios Sociales',
-  'Inglés',
-  'ECA',
-  'Computación',
-  'Animación a la lectura',
-  'Educación física',
-  'ERE',
-  'Razonamiento lógico Matemático',
-  'Acompañamiento integral en el Aula',
-];
 
 interface FormData {
   representativeName: string;
@@ -115,6 +118,24 @@ export function FormPage() {
   const [dniTouched, setDniTouched] = useState(false);
   const [repNameTouched, setRepNameTouched] = useState(false);
   const [studentNameTouched, setStudentNameTouched] = useState(false);
+  const [activeCourses, setActiveCourses] = useState<string[]>(FALLBACK_COURSES);
+  const [activeSubjects, setActiveSubjects] = useState<string[]>(FALLBACK_SUBJECTS);
+  const [configLoading, setConfigLoading] = useState(true);
+
+  useEffect(() => {
+    fetch(`${API_URL}/solicitud-config/proceso_mejora`)
+      .then((r) => r.json())
+      .then((cfg) => {
+        setActiveCourses(
+          (cfg.courses ?? []).filter((c: { active: number }) => c.active === 1).map((c: { name: string }) => c.name),
+        );
+        setActiveSubjects(
+          (cfg.subjects ?? []).filter((s: { active: number }) => s.active === 1).map((s: { name: string }) => s.name),
+        );
+      })
+      .catch(() => { /* usa los valores de respaldo */ })
+      .finally(() => setConfigLoading(false));
+  }, []);
 
   const dniValid = validateEcuadorianDni(form.representativeDni);
   const dniError = dniTouched && !dniValid;
@@ -406,9 +427,9 @@ export function FormPage() {
                   className="w-full border border-slate-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 bg-white"
                 >
                   <option value="">Seleccionar...</option>
-                  {COURSES.map((c) => (
-                    <option key={c.value} value={c.value}>
-                      {c.label}
+                  {activeCourses.map((c) => (
+                    <option key={c} value={c}>
+                      {COURSE_LABELS[c] ?? c}
                     </option>
                   ))}
                 </select>
@@ -470,7 +491,7 @@ export function FormPage() {
               Asignaturas para Mejora:
             </p>
             <div className="grid grid-cols-2 gap-2 mb-6">
-              {SUBJECTS.map((subject) => (
+              {activeSubjects.map((subject) => (
                 <label
                   key={subject}
                   className="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-slate-50 transition-colors"

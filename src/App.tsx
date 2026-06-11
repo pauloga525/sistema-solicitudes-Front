@@ -8,6 +8,8 @@ import { PreviewPage } from './pages/PreviewPage';
 import AdminLogin from './admin/pages/Login';
 import AdminSolicitudes from './admin/pages/Solicitudes';
 import AdminDetalle from './admin/pages/DetalleSolicitud';
+import AdminEditorSolicitudes from './admin/pages/EditorSolicitudes';
+import AdminEditorDetalle from './admin/pages/EditorDetalle';
 import AdminPrivateRoute from './admin/PrivateRoute';
 
 function App() {
@@ -27,6 +29,8 @@ function App() {
         <Route element={<AdminPrivateRoute />}>
           <Route path="/admin/dashboard" element={<AdminSolicitudes />} />
           <Route path="/admin/solicitudes/:id" element={<AdminDetalle />} />
+          <Route path="/admin/editor" element={<AdminEditorSolicitudes />} />
+          <Route path="/admin/editor/:requestType" element={<AdminEditorDetalle />} />
         </Route>
         <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
         <Route path="/admin/*" element={<Navigate to="/admin/login" replace />} />
